@@ -1,0 +1,8 @@
+{
+  "pi_model": "zero2w",
+  "mic_pins": {
+    "sck": 18,
+    "ws": 19,
+    "sd": 20
+  }
+}

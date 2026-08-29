@@ -1,0 +1,26 @@
+[
+  {
+    "id": "demo0001",
+    "gpio": 6,
+    "word": "yon",
+    "action": "ON"
+  },
+  {
+    "id": "demo0002",
+    "gpio": 6,
+    "word": "chiroqni yoq",
+    "action": "ON"
+  },
+  {
+    "id": "demo0003",
+    "gpio": 6,
+    "word": "o'ch",
+    "action": "OFF"
+  },
+  {
+    "id": "demo0004",
+    "gpio": 6,
+    "word": "chiroqni o'chir",
+    "action": "OFF"
+  }
+]

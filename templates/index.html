@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ovozli Boshqaruv Tizimi</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="board">
+
+  <header class="board-header">
+    <div class="header-left">
+      <div class="chip-logo" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="header-text">
+        <h1 data-i18n="app_title">OVOZLI&nbsp;BOSHQARUV</h1>
+        <p class="subtitle" id="subtitle">Raspberry Pi &middot; INMP441 &middot; Vosk (oflayn)</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="lang-toggle" id="langToggle">
+        <button type="button" class="lang-btn" data-lang="uz">UZ</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <div class="led-status" id="modelLed" data-i18n-title="model_led_title">
+        <span class="led-dot"></span> MODEL
+      </div>
+      <div class="led-status" id="simLed" data-i18n-title="gpio_led_title">
+        <span class="led-dot"></span> GPIO
+      </div>
+    </div>
+  </header>
+
+  <main class="panel-grid" id="panelGrid">
+
+    <section class="module module-listen">
+      <div class="module-label" data-i18n="section_listen">&rsaquo; TINGLASH</div>
+      <div class="listen-body">
+        <div class="waveform" id="waveform">
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+        </div>
+        <div class="listen-info">
+          <div class="last-word" id="liveWord">&mdash;</div>
+          <div class="listen-sub" id="statusText" data-i18n="checking">Tekshirilmoqda&hellip;</div>
+        </div>
+        <button class="btn btn-toggle" id="engineToggleBtn" disabled>&hellip;</button>
+      </div>
+      <div class="monitor-label">
+        SERIAL MONITOR
+        <span class="monitor-hint" data-i18n="monitor_hint">bosing &rarr; so'z "Yangi qoida" formasiga tushadi</span>
+      </div>
+      <div class="serial-monitor" id="serialMonitor">
+        <p class="monitor-empty" data-i18n="monitor_empty">Hali hech narsa aniqlanmadi&hellip;</p>
+      </div>
+      <p class="engine-error" id="engineError"></p>
+    </section>
+
+    <section class="module module-device">
+      <div class="module-label" data-i18n="section_device">&rsaquo; QURILMA VA MIKROFON</div>
+
+      <div class="field">
+        <label data-i18n="label_pi_model">Raspberry Pi modeli</label>
+        <div class="model-toggle" id="modelToggle"></div>
+        <p class="model-note" id="modelNote"></p>
+      </div>
+
+      <div class="field">
+        <label data-i18n="label_mic_wiring">INMP441 ulanish sxemasi</label>
+        <table class="wiring-table">
+          <thead>
+            <tr>
+              <th data-i18n="th_mic_pin">Mikrofon pini</th>
+              <th data-i18n="th_connects_to">Ulanadi</th>
+              <th data-i18n="th_physical_pin">Fizik pin</th>
+            </tr>
+          </thead>
+          <tbody id="wiringBody"></tbody>
+        </table>
+      </div>
+
+      <details class="advanced-mic">
+        <summary data-i18n="advanced_mic">Kengaytirilgan: mikrofon pinlarini o'zgartirish</summary>
+        <div class="mic-edit-grid">
+          <div class="mic-edit-field">
+            <label for="micSck">SCK (BCLK)</label>
+            <input type="number" id="micSck" class="text-input">
+          </div>
+          <div class="mic-edit-field">
+            <label for="micWs">WS (LRCLK)</label>
+            <input type="number" id="micWs" class="text-input">
+          </div>
+          <div class="mic-edit-field">
+            <label for="micSd">SD (DIN)</label>
+            <input type="number" id="micSd" class="text-input">
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" id="saveMicBtn" data-i18n="btn_save">SAQLASH</button>
+        <p class="form-error" id="micError"></p>
+        <p class="model-note" data-i18n="mic_note">Standart INMP441 ulanishi uchun bu qiymatlarni o'zgartirmang &mdash;
+          faqat boshqacha sxema bilan ulagan bo'lsangiz o'zgartiring.</p>
+      </details>
+    </section>
+
+    <section class="module module-form">
+      <div class="module-label" data-i18n="section_new_rule">&rsaquo; YANGI QOIDA</div>
+
+      <form id="addRuleForm">
+        <div class="field">
+          <label data-i18n="step1">1. GPIO pinni tanlang</label>
+          <div class="pin-header" id="pinHeader"></div>
+          <input type="hidden" id="gpioValue" required>
+        </div>
+
+        <div class="field">
+          <label data-i18n="step2">2. Amalni tanlang</label>
+          <div class="action-toggle">
+            <button type="button" class="action-btn action-on selected" data-action="ON">
+              ON &nbsp;(HIGH)
+            </button>
+            <button type="button" class="action-btn action-off" data-action="OFF">
+              OFF &nbsp;(LOW)
+            </button>
+          </div>
+          <input type="hidden" id="actionValue" value="ON">
+        </div>
+
+        <div class="field">
+          <label for="wordInput" data-i18n="step3">3. Ovozli so'zni yozing</label>
+          <input type="text" id="wordInput" class="text-input"
+                 data-i18n-placeholder="word_placeholder"
+                 placeholder="masalan: yon, o'ch, chiroqni yoq" autocomplete="off" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" data-i18n="btn_add_rule">+ QOIDANI QO'SHISH</button>
+        <p class="form-error" id="formError"></p>
+      </form>
+    </section>
+
+    <section class="module module-table">
+      <div class="module-label">
+        <span data-i18n="section_rules">&rsaquo; MAVJUD QOIDALAR</span>
+        <span id="ruleCount"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="th_gpio">GPIO</th>
+              <th data-i18n="th_word">SO'Z</th>
+              <th data-i18n="th_action">AMAL</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="rulesBody"></tbody>
+        </table>
+        <p class="empty-state" id="emptyState" data-i18n="empty_rules">Hali qoida qo'shilmagan. Chapdagi shakldan foydalaning.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="board-footer">
+    <span>vCONTROL</span>
+    <span id="footerModel"></span>
+  </footer>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
