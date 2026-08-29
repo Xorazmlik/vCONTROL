@@ -416,6 +416,3 @@ istalgan maqsadda (shu jumladan tijorat maqsadida ham) erkin
 foydalanishingiz, o'zgartirishingiz va tarqatishingiz mumkin, yagona
 shart — asl mualliflik huquqi bildirishnomasini saqlab qolish.
 
-`LICENSE` faylidagi `[MUALLIF ISMINI SHU YERGA YOZING / GitHub
-username]` qismini o'zingizning ismingiz yoki GitHub foydalanuvchi
-nomingizga almashtirishni unutmang.
